@@ -34,3 +34,15 @@ class NameDataset(Dataset):
         
         return first_name_tensor, last_name_tensor, torch.tensor(label, dtype=torch.float)
 
+def balance_dataset(data, label_col='label'):
+    class_0 = data[data[label_col] == 0]
+    class_1 = data[data[label_col] == 1]
+    
+    min_class_size = min(len(class_0), len(class_1))
+    
+    balanced_class_0 = class_0.sample(min_class_size)
+    balanced_class_1 = class_1.sample(min_class_size)
+    
+    balanced_data = pd.concat([balanced_class_0, balanced_class_1]).sample(frac=1).reset_index(drop=True)
+    return balanced_data
+
